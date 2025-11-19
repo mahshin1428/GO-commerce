@@ -15,14 +15,15 @@ type products struct{
 
 var productsList []products
 
+
 func helloHandler(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintln(w, "Hello world")
 }
 
+
 func aboutHandler(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintln(w, " Tui amre chinbi na ami tor baper khaloto bhai er chachato bhai er sumondir polar chacha")
 }
-
 
 
 func createProducts(w http.ResponseWriter, r *http.Request){
@@ -48,11 +49,11 @@ func createProducts(w http.ResponseWriter, r *http.Request){
 	newProduct.ID =len(productsList) + 1   // assigning id to the product, as User cannot assign id to the products
 	productsList = append(productsList, newProduct)
 
-
-	encoder := json.NewEncoder(w)     //Encoder json thake struct e convert kore backend thake frontend e pathay  
-	encoder.Encode(newProduct)
+	
+	sendData(w,newProduct, 201)
 
 }	
+
 
 func getProducts(w http.ResponseWriter, r *http.Request){
 	corsHandler(w)
@@ -63,10 +64,10 @@ func getProducts(w http.ResponseWriter, r *http.Request){
 		http.Error(w, "please give me GET request", 400)  //200--> okay , 201-->created something, 400--> bad information, 404-->request not found in the server, 500-->internal server error 
 		return
 	}
-	encoder := json.NewEncoder(w)     //Encoder json thake struct e convert kore backend thake frontend e pathay  
-	encoder.Encode(productsList)
-
+	
+	sendData(w, productsList, 200)
 }
+
 
 func corsHandler(w http.ResponseWriter){
 	w.Header().Set("Access-Control-Allow-Origin","*")
@@ -75,12 +76,19 @@ func corsHandler(w http.ResponseWriter){
 	w.Header().Set("Content-Type","application/json")
 }
 
+
 func preFlightRq(w http.ResponseWriter, r *http.Request){
 	if r.Method =="OPTIONS"{        //browser send a preflight request to check is user allowed to send complex request or not
 		w.WriteHeader(200)
 	}
 }
 
+
+func sendData(w http.ResponseWriter, data interface{}, statusCode int){
+	w.WriteHeader(statusCode)
+	encoder := json.NewEncoder(w)     //Encoder json thake struct e convert kore backend thake frontend e pathay  
+	encoder.Encode(data)
+}
 
 
 func main() {
