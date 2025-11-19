@@ -26,10 +26,9 @@ func aboutHandler(w http.ResponseWriter, r *http.Request){
 
 
 func createProducts(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("Access-Control-Allow-Origin","*")
-	w.Header().Set("Access-Control-allow-Methods", "POST")
-	w.Header().Set("Access-Control-allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type","application/json")
+
+	corsHandler(w)
+	
 
 	 if r.Method != "POST"{
 		http.Error(w, "please give me POST request", 400)  //200--> okay , 201-->created something, 400--> bad information, 404-->request not found in the server, 500-->internal server error 
@@ -56,8 +55,9 @@ func createProducts(w http.ResponseWriter, r *http.Request){
 }	
 
 func getProducts(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("Access-Control-Allow_Origin","*")
-	w.Header().Set("Content-Type","application/json")
+	corsHandler(w)
+
+	preFlightRq(w, r)
 
 	 if r.Method != "GET"{
 		http.Error(w, "please give me GET request", 400)  //200--> okay , 201-->created something, 400--> bad information, 404-->request not found in the server, 500-->internal server error 
@@ -66,6 +66,19 @@ func getProducts(w http.ResponseWriter, r *http.Request){
 	encoder := json.NewEncoder(w)     //Encoder json thake struct e convert kore backend thake frontend e pathay  
 	encoder.Encode(productsList)
 
+}
+
+func corsHandler(w http.ResponseWriter){
+	w.Header().Set("Access-Control-Allow-Origin","*")
+	w.Header().Set("Access-Control-allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-allow-Headers", "Content-Type")
+	w.Header().Set("Content-Type","application/json")
+}
+
+func preFlightRq(w http.ResponseWriter, r *http.Request){
+	if r.Method =="OPTIONS"{        //browser send a preflight request to check is user allowed to send complex request or not
+		w.WriteHeader(200)
+	}
 }
 
 
