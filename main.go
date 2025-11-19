@@ -26,8 +26,9 @@ func aboutHandler(w http.ResponseWriter, r *http.Request){
 
 
 func createProducts(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("Access-Control-Allow_Origin","*")
-	w.Header().Set("Access-Control_allow_Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Origin","*")
+	w.Header().Set("Access-Control-allow-Methods", "POST")
+	w.Header().Set("Access-Control-allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type","application/json")
 
 	 if r.Method != "POST"{
